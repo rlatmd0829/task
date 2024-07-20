@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class GetCheapestProductsByCategoryUseCase {
 	private final ProductService productService;
 

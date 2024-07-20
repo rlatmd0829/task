@@ -8,6 +8,5 @@ import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.infrastructure.persistence.ProductEntity;
 
 public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long> {
-	List<ProductEntity> findByCategory(Category category);
 	List<ProductEntity> findAllByCategoryIn(List<Category> categories);
 }

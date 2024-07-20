@@ -18,19 +18,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductJpaRepository productJpaRepository;
 
 	@Override
-	public List<Product> findByCategory(Category category) {
-		List<ProductEntity> productEntities = productJpaRepository.findByCategory(category);
-		return productEntities.stream()
-			.map(ProductEntity::toDomain)
-			.collect(Collectors.toList());
-	}
-
-	@Override
 	public List<Product> findAllByCategoryIn(List<Category> categories) {
 		List<ProductEntity> productEntities = productJpaRepository.findAllByCategoryIn(categories);
 		return productEntities.stream()
 			.map(ProductEntity::toDomain)
 			.collect(Collectors.toList());
 	}
-
 }
