@@ -8,6 +8,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +32,7 @@ public class ProductEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
 	private BrandEntity brand;
 
@@ -56,5 +57,9 @@ public class ProductEntity {
 			productEntity.getCategory(),
 			productEntity.getPrice().toDomain()
 		);
+	}
+
+	public void updateBrand(BrandEntity brand) {
+		this.brand = brand;
 	}
 }

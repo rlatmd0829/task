@@ -1,9 +1,14 @@
 package com.musinsa.task.product.infrastructure.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,6 +28,14 @@ public class BrandEntity {
 	private Long id;
 
 	private String name;
+
+	@OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ProductEntity> products = new ArrayList<>();
+
+	public void addProduct(ProductEntity product) {
+		products.add(product);
+		product.updateBrand(this);
+	}
 
 	public static BrandEntity create(String name) {
 		return BrandEntity.builder()
