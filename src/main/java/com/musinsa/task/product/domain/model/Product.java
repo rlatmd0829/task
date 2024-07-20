@@ -1,26 +1,4 @@
 package com.musinsa.task.product.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class Product {
-	private Long id;
-	private Brand brand;
-	private Category category;
-	private Price price;
-
-	public static Product create(Long id, Brand brand, Category category, Price price) {
-		return Product.builder()
-			.id(id)
-			.brand(brand)
-			.category(category)
-			.price(price)
-			.build();
-	}
+public record Product(Long id, Brand brand, Category category, Price price) {
 }

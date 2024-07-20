@@ -11,10 +11,10 @@ import com.musinsa.task.product.presentation.dto.TotalPriceResponse;
 
 public class ProductMapper {
 	public static CategoryPriceResponse toCategoryPriceResponse(Category category, Product product) {
-		return CategoryPriceResponse.create(
+		return new CategoryPriceResponse(
 			category.getDisplayName(),
-			product.getBrand().getName(),
-			product.getPrice().getValue()
+			product.brand().name(),
+			product.price().value()
 		);
 	}
 
@@ -23,7 +23,7 @@ public class ProductMapper {
 			.sorted(Map.Entry.comparingByKey())
 			.map(entry -> toCategoryPriceResponse(entry.getKey(), entry.getValue()))
 			.collect(Collectors.toList());
-		int total = categoryPrices.stream().mapToInt(CategoryPriceResponse::getPrice).sum();
-		return TotalPriceResponse.create(categoryPrices, total);
+		int total = categoryPrices.stream().mapToInt(CategoryPriceResponse::price).sum();
+		return new TotalPriceResponse(categoryPrices, total);
 	}
 }

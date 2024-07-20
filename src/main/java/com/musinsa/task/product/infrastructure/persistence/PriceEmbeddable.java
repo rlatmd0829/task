@@ -26,6 +26,6 @@ public class PriceEmbeddable {
 	}
 
 	public Price toDomain() {
-		return Price.create(value);
+		return new Price(value);
 	}
 }

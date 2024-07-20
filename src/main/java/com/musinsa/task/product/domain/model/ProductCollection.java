@@ -9,12 +9,7 @@ import java.util.stream.Collectors;
 import com.musinsa.task.common.exception.CustomException;
 import com.musinsa.task.common.exception.ErrorCode;
 
-import lombok.Getter;
-
-@Getter
-public class ProductCollection {
-	private final List<Product> products;
-
+public record ProductCollection(List<Product> products) {
 	public ProductCollection(List<Product> products) {
 		this.products = Collections.unmodifiableList(products);
 	}
@@ -29,12 +24,12 @@ public class ProductCollection {
 
 	public Map<Category, List<Product>> groupByCategory() {
 		return products.stream()
-			.collect(Collectors.groupingBy(Product::getCategory));
+			.collect(Collectors.groupingBy(Product::category));
 	}
 
 	public Product findCheapestProduct(List<Product> products) {
 		return products.stream()
-			.min(Comparator.comparingInt(p -> p.getPrice().getValue()))
+			.min(Comparator.comparingInt(p -> p.price().value()))
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 }

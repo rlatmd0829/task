@@ -50,9 +50,9 @@ public class ProductEntity {
 	}
 
 	public static Product toDomain(ProductEntity productEntity) {
-		return Product.create(
+		return new Product(
 			productEntity.getId(),
-			Brand.create(productEntity.getBrand().getId(), productEntity.getBrand().getName()),
+			new Brand(productEntity.getBrand().getId(), productEntity.getBrand().getName()),
 			productEntity.getCategory(),
 			productEntity.getPrice().toDomain()
 		);
