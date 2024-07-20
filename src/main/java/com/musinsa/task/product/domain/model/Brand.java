@@ -9,18 +9,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class Product {
+public class Brand {
 	private Long id;
-	private Brand brand;
-	private Category category;
-	private Price price;
+	private String name;
 
-	public static Product create(Long id, Brand brand, Category category, Price price) {
-		return Product.builder()
+	public static Brand create(Long id, String name) {
+		return Brand.builder()
 			.id(id)
-			.brand(brand)
-			.category(category)
-			.price(price)
+			.name(name)
 			.build();
 	}
 }

@@ -1,14 +1,14 @@
 package com.musinsa.task.product.domain.model;
 
 public enum Category {
-	TOPS("상의"),
-	OUTER("아우터"),
-	PANTS("바지"),
-	SNEAKERS("스니커즈"),
-	BAGS("가방"),
-	HATS("모자"),
-	SOCKS("양말"),
-	ACCESSORIES("액세서리");
+	상의("상의"),
+	아우터("아우터"),
+	바지("바지"),
+	스니커즈("스니커즈"),
+	가방("가방"),
+	모자("모자"),
+	양말("양말"),
+	액세서리("액세서리");
 
 	private final String displayName;
 
@@ -18,14 +18,5 @@ public enum Category {
 
 	public String getDisplayName() {
 		return displayName;
-	}
-
-	public static Category fromDisplayName(String displayName) {
-		for (Category category : Category.values()) {
-			if (category.getDisplayName().equals(displayName)) {
-				return category;
-			}
-		}
-		throw new IllegalArgumentException("Unknown display name: " + displayName);
 	}
 }
