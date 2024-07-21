@@ -18,9 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.musinsa.task.common.exception.CustomException;
 import com.musinsa.task.common.exception.ErrorCode;
 import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.infrastructure.persistence.BrandEntity;
+import com.musinsa.task.product.infrastructure.persistence.PriceEmbeddable;
 import com.musinsa.task.product.infrastructure.persistence.ProductEntity;
 import com.musinsa.task.product.infrastructure.repository.BrandJpaRepository;
 import com.musinsa.task.product.infrastructure.repository.ProductJpaRepository;
@@ -82,5 +84,67 @@ class BrandControllerTest {
 		assertEquals(15000, savedProducts.get(0).getPrice().getValue());
 		assertEquals(Category.바지, savedProducts.get(1).getCategory());
 		assertEquals(20000, savedProducts.get(1).getPrice().getValue());
+	}
+
+	@Test
+	@DisplayName("기존 브랜드와 상품을 업데이트하는 통합 테스트")
+	void testUpdateBrand() throws Exception {
+		// Given
+		BrandEntity existingBrand = brandJpaRepository.save(BrandEntity.create("ExistingBrand"));
+		productJpaRepository.save(ProductEntity.create(existingBrand, Category.상의, new PriceEmbeddable(1000)));
+		productJpaRepository.save(ProductEntity.create(existingBrand, Category.바지, new PriceEmbeddable(2000)));
+
+		Long existingBrandId = existingBrand.getId();
+
+		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+			"UpdatedBrand",
+			List.of(
+				new ProductCreateRequest("상의", 1500),
+				new ProductCreateRequest("바지", 2500)
+			)
+		);
+
+		String brandJson = objectMapper.writeValueAsString(brandCreateRequest);
+
+		// When & Then
+		mockMvc.perform(put("/api/brands/{id}", existingBrandId)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(brandJson))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").doesNotExist());
+
+		BrandEntity updatedBrand = brandJpaRepository.findById(existingBrandId)
+			.orElseThrow(() -> new CustomException(ErrorCode.BRAND_NOT_FOUND));
+
+		assertEquals("UpdatedBrand", updatedBrand.getName());
+		assertEquals(2, updatedBrand.getProducts().size());
+
+		List<ProductEntity> updatedProducts = updatedBrand.getProducts();
+		assertEquals(Category.상의, updatedProducts.get(0).getCategory());
+		assertEquals(1500, updatedProducts.get(0).getPrice().getValue());
+		assertEquals(Category.바지, updatedProducts.get(1).getCategory());
+		assertEquals(2500, updatedProducts.get(1).getPrice().getValue());
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 브랜드 업데이트 시 예외 발생 테스트")
+	void testUpdateNonExistingBrand() throws Exception {
+		// Given
+		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+			"NonExistingBrand",
+			List.of(
+				new ProductCreateRequest("상의", 1500),
+				new ProductCreateRequest("바지", 2500)
+			)
+		);
+
+		String brandJson = objectMapper.writeValueAsString(brandCreateRequest);
+
+		// When & Then
+		mockMvc.perform(put("/api/brands/{id}", 999L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(brandJson))
+			.andExpect(status().isNotFound())
+			.andExpect(jsonPath("$.message").value(ErrorCode.BRAND_NOT_FOUND.getMessage()));
 	}
 }
