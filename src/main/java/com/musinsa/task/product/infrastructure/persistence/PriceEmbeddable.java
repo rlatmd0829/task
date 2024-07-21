@@ -28,4 +28,10 @@ public class PriceEmbeddable {
 	public Price toDomain() {
 		return new Price(value);
 	}
+
+	public static PriceEmbeddable toEmbeddable(Price price) {
+		return PriceEmbeddable.builder()
+			.value(price.value())
+			.build();
+	}
 }

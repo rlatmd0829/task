@@ -1,4 +1,4 @@
-package com.musinsa.task.product.presentation.dto;
+package com.musinsa.task.product.presentation.dto.response;
 
 import java.util.List;
 

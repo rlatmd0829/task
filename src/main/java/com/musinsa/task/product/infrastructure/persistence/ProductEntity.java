@@ -59,6 +59,13 @@ public class ProductEntity {
 		);
 	}
 
+	public static ProductEntity toEntity(Product product) {
+		return ProductEntity.builder()
+			.category(product.category())
+			.price(PriceEmbeddable.toEmbeddable(product.price()))
+			.build();
+	}
+
 	public void updateBrand(BrandEntity brand) {
 		this.brand = brand;
 	}

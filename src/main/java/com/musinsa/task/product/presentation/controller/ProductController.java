@@ -15,9 +15,9 @@ import com.musinsa.task.product.application.usecase.GetMinMaxPriceByCategoryUseC
 import com.musinsa.task.product.domain.model.Brand;
 import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.domain.model.Product;
-import com.musinsa.task.product.presentation.dto.CheapestBrandResponse;
-import com.musinsa.task.product.presentation.dto.PriceInfoResponse;
-import com.musinsa.task.product.presentation.dto.TotalCategoryPriceResponse;
+import com.musinsa.task.product.presentation.dto.response.CheapestBrandResponse;
+import com.musinsa.task.product.presentation.dto.response.PriceInfoResponse;
+import com.musinsa.task.product.presentation.dto.response.TotalCategoryPriceResponse;
 import com.musinsa.task.product.presentation.mapper.ProductMapper;
 
 import lombok.RequiredArgsConstructor;

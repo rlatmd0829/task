@@ -3,6 +3,8 @@ package com.musinsa.task.product.infrastructure.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.musinsa.task.product.domain.model.Brand;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,7 @@ public class BrandEntity {
 
 	private String name;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductEntity> products = new ArrayList<>();
 
@@ -41,5 +44,13 @@ public class BrandEntity {
 		return BrandEntity.builder()
 			.name(name)
 			.build();
+	}
+
+	public static BrandEntity toEntity(Brand brand) {
+		BrandEntity brandEntity = BrandEntity.builder()
+			.name(brand.name())
+			.build();
+		brand.products().forEach(product -> brandEntity.addProduct(ProductEntity.toEntity(product)));
+		return brandEntity;
 	}
 }
