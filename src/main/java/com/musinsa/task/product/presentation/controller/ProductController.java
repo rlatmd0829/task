@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musinsa.task.common.exception.ApiResponse;
 import com.musinsa.task.product.application.dto.PriceInfo;
 import com.musinsa.task.product.application.usecase.GetCheapestBrandProductsUseCase;
 import com.musinsa.task.product.application.usecase.GetCheapestProductsByCategoryUseCase;
@@ -31,23 +32,23 @@ public class ProductController {
 	private final GetMinMaxPriceByCategoryUseCase getMinMaxPriceByCategoryUseCase;
 
 	@GetMapping("/cheapest")
-	public ResponseEntity<TotalCategoryPriceResponse> getCheapestProduct() {
+	public ResponseEntity<ApiResponse<TotalCategoryPriceResponse>> getCheapestProduct() {
 		Map<Category, Product> categoryProductMap = getCheapestProductsByCategoryUseCase.execute();
 		TotalCategoryPriceResponse response = ProductMapper.toTotalPriceResponse(categoryProductMap);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new ApiResponse<>(response));
 	}
 
 	@GetMapping("/cheapest-brand")
-	public ResponseEntity<CheapestBrandResponse> getCheapestBrand() {
+	public ResponseEntity<ApiResponse<CheapestBrandResponse>> getCheapestBrand() {
 		Brand cheapestBrand = getCheapestBrandProductsUseCase.execute();
 		CheapestBrandResponse response = ProductMapper.toCheapestBrandResponse(cheapestBrand);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new ApiResponse<>(response));
 	}
 
 	@GetMapping("/price-range")
-	public ResponseEntity<PriceInfoResponse> getPriceRangeByCategory(@RequestParam String category) {
+	public ResponseEntity<ApiResponse<PriceInfoResponse>> getPriceRangeByCategory(@RequestParam String category) {
 		PriceInfo priceInfo = getMinMaxPriceByCategoryUseCase.execute(category);
 		PriceInfoResponse response = ProductMapper.toPriceInfoResponse(priceInfo);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new ApiResponse<>(response));
 	}
 }

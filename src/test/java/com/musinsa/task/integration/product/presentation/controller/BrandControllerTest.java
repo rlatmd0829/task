@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.musinsa.task.common.exception.ErrorCode;
 import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.infrastructure.persistence.BrandEntity;
 import com.musinsa.task.product.infrastructure.persistence.ProductEntity;
@@ -68,7 +69,8 @@ class BrandControllerTest {
 		mockMvc.perform(post("/api/brands/add")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(brandJson))
-			.andExpect(status().isCreated());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").doesNotExist());
 
 		BrandEntity savedBrand = brandJpaRepository.findAll().get(0);
 		assertEquals("NewBrand", savedBrand.getName());
