@@ -66,7 +66,7 @@ class BrandControllerTest {
 		String brandJson = objectMapper.writeValueAsString(brandCreateRequest);
 
 		// When & Then
-		mockMvc.perform(post("/api/brands/add")
+		mockMvc.perform(post("/api/brands")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(brandJson))
 			.andExpect(status().isOk())

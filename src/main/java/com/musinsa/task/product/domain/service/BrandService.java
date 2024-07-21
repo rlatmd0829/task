@@ -15,4 +15,8 @@ public class BrandService {
 	public void addBrand(Brand brand) {
 		brandRepository.save(brand);
 	}
+
+	public void updateBrand(Brand brand) {
+		brandRepository.update(brand);
+	}
 }

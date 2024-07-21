@@ -53,4 +53,18 @@ public class BrandEntity {
 		brand.products().forEach(product -> brandEntity.addProduct(ProductEntity.toEntity(product)));
 		return brandEntity;
 	}
+
+	public static Brand toDomain(BrandEntity brandEntity) {
+		return new Brand(
+			brandEntity.getId(),
+			brandEntity.getName(),
+			brandEntity.getProducts().stream()
+				.map(ProductEntity::toDomain)
+				.toList()
+		);
+	}
+
+	public void updateName(String name) {
+		this.name = name;
+	}
 }

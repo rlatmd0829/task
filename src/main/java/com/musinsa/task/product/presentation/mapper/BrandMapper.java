@@ -21,6 +21,13 @@ public class BrandMapper {
 		return new Brand(null, brandCreateRequest.name(), products);
 	}
 
+	public Brand toDomain(Long id, BrandCreateRequest brandCreateRequest) {
+		List<Product> products = brandCreateRequest.products().stream()
+			.map(BrandMapper::toDomain)
+			.collect(Collectors.toList());
+		return new Brand(id, brandCreateRequest.name(), products);
+	}
+
 	private Product toDomain(ProductCreateRequest productCreateRequest) {
 		Category category = Category.fromString(productCreateRequest.categoryName());
 		Price price = new Price(productCreateRequest.price());

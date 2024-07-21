@@ -1,5 +1,7 @@
 package com.musinsa.task.product.infrastructure.persistence;
 
+import java.util.ArrayList;
+
 import com.musinsa.task.product.domain.model.Brand;
 import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.domain.model.Product;
@@ -53,7 +55,7 @@ public class ProductEntity {
 	public static Product toDomain(ProductEntity productEntity) {
 		return new Product(
 			productEntity.getId(),
-			new Brand(productEntity.getBrand().getId(), productEntity.getBrand().getName()),
+			new Brand(productEntity.getBrand().getId(), productEntity.getBrand().getName(), new ArrayList<>()),
 			productEntity.getCategory(),
 			productEntity.getPrice().toDomain()
 		);
