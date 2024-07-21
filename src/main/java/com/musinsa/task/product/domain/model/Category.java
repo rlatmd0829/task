@@ -1,5 +1,8 @@
 package com.musinsa.task.product.domain.model;
 
+import com.musinsa.task.common.exception.CustomException;
+import com.musinsa.task.common.exception.ErrorCode;
+
 public enum Category {
 	상의("상의"),
 	아우터("아우터"),
@@ -16,7 +19,11 @@ public enum Category {
 		this.displayName = displayName;
 	}
 
-	public String getDisplayName() {
-		return displayName;
+	public static Category fromString(String categoryName) {
+		try {
+			return Category.valueOf(categoryName.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ErrorCode.INVALID_TYPE_VALUE);
+		}
 	}
 }

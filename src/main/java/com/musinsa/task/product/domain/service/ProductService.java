@@ -25,4 +25,9 @@ public class ProductService {
 		List<Product> products = productRepository.findAll();
 		return new ProductCollection(products);
 	}
+
+	public ProductCollection getProductsByCategory(Category category) {
+		List<Product> products = productRepository.findAllByCategory(category);
+		return new ProductCollection(products);
+	}
 }

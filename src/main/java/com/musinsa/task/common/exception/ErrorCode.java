@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
 	/* 400 BAD_REQUEST */
 	INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 입력값 입니다."),
+	INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "잘못된 타입입니다."),
 
 	/* 404 NOT_FOUND */
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),

@@ -8,4 +8,5 @@ import com.musinsa.task.product.domain.model.Product;
 public interface ProductRepository {
 	List<Product> findAllByCategoryIn(List<Category> categories);
 	List<Product> findAll();
+	List<Product> findAllByCategory(Category category);
 }

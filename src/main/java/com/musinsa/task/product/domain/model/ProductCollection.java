@@ -1,5 +1,6 @@
 package com.musinsa.task.product.domain.model;
 
+import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -42,5 +43,25 @@ public record ProductCollection(List<Product> products) {
 		return brandProductsMap.keySet().stream()
 			.min(Comparator.comparingInt(Brand::getTotalPrice))
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
+
+	public Map.Entry<Product, Product> findMinMaxPriceProductsByCategory(Category category) {
+		List<Product> categoryProducts = products.stream()
+			.filter(product -> product.category().equals(category))
+			.toList();
+
+		if (categoryProducts.isEmpty()) {
+			throw new CustomException(ErrorCode.PRODUCT_NOT_FOUND);
+		}
+
+		Product minPriceProduct = categoryProducts.stream()
+			.min(Comparator.comparingInt(p -> p.price().value()))
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		Product maxPriceProduct = categoryProducts.stream()
+			.max(Comparator.comparingInt(p -> p.price().value()))
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		return new AbstractMap.SimpleEntry<>(minPriceProduct, maxPriceProduct);
 	}
 }
