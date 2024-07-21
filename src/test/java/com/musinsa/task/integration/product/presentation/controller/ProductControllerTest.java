@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.infrastructure.persistence.BrandEntity;
 import com.musinsa.task.product.infrastructure.persistence.PriceEmbeddable;
 import com.musinsa.task.product.infrastructure.persistence.ProductEntity;
+import com.musinsa.task.product.infrastructure.repository.BrandJpaRepository;
 import com.musinsa.task.product.infrastructure.repository.ProductJpaRepository;
 
 @SpringBootTest
@@ -33,14 +36,34 @@ class ProductControllerTest {
 	@Autowired
 	private ProductJpaRepository productJpaRepository;
 
+	@Autowired
+	private BrandJpaRepository brandJpaRepository;
+
 	@BeforeEach
 	void setUp() {
 		productJpaRepository.deleteAll();
+		brandJpaRepository.deleteAll();
 
-		productJpaRepository.save(new ProductEntity(1L, new BrandEntity(1L, "A"), Category.상의, new PriceEmbeddable(100)));
-		productJpaRepository.save(new ProductEntity(2L, new BrandEntity(2L, "B"), Category.가방, new PriceEmbeddable(200)));
-		productJpaRepository.save(new ProductEntity(3L, new BrandEntity(1L, "A"), Category.상의, new PriceEmbeddable(50)));
-		productJpaRepository.save(new ProductEntity(4L, new BrandEntity(3L, "C"), Category.가방, new PriceEmbeddable(150)));
+		BrandEntity brandA = brandJpaRepository.save(BrandEntity.create("A"));
+		BrandEntity brandB = brandJpaRepository.save(BrandEntity.create("B"));
+
+		productJpaRepository.save(ProductEntity.create(brandA, Category.상의, new PriceEmbeddable(11200)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.아우터, new PriceEmbeddable(5500)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.바지, new PriceEmbeddable(4200)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.스니커즈, new PriceEmbeddable(9000)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.가방, new PriceEmbeddable(2000)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.모자, new PriceEmbeddable(1700)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.양말, new PriceEmbeddable(1800)));
+		productJpaRepository.save(ProductEntity.create(brandA, Category.액세서리, new PriceEmbeddable(2300)));
+
+		productJpaRepository.save(ProductEntity.create(brandB, Category.상의, new PriceEmbeddable(10500)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.아우터, new PriceEmbeddable(5900)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.바지, new PriceEmbeddable(3800)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.스니커즈, new PriceEmbeddable(9100)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.가방, new PriceEmbeddable(2100)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.모자, new PriceEmbeddable(2000)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.양말, new PriceEmbeddable(2000)));
+		productJpaRepository.save(ProductEntity.create(brandB, Category.액세서리, new PriceEmbeddable(2200)));
 	}
 
 	@Test
@@ -49,11 +72,58 @@ class ProductControllerTest {
 		mockMvc.perform(get("/api/products/cheapest")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.categoryPrices", hasSize(2)))
+			.andExpect(jsonPath("$.categoryPrices", hasSize(8)))
 			.andExpect(jsonPath("$.categoryPrices[0].category", is("상의")))
-			.andExpect(jsonPath("$.categoryPrices[0].price", is(50)))
-			.andExpect(jsonPath("$.categoryPrices[1].category", is("가방")))
-			.andExpect(jsonPath("$.categoryPrices[1].price", is(150)))
-			.andExpect(jsonPath("$.total", is(200)));
+			.andExpect(jsonPath("$.categoryPrices[0].price", is(10500)))
+			.andExpect(jsonPath("$.categoryPrices[0].brand", is("B")))
+			.andExpect(jsonPath("$.categoryPrices[1].category", is("아우터")))
+			.andExpect(jsonPath("$.categoryPrices[1].price", is(5500)))
+			.andExpect(jsonPath("$.categoryPrices[1].brand", is("A")))
+			.andExpect(jsonPath("$.categoryPrices[2].category", is("바지")))
+			.andExpect(jsonPath("$.categoryPrices[2].price", is(3800)))
+			.andExpect(jsonPath("$.categoryPrices[2].brand", is("B")))
+			.andExpect(jsonPath("$.categoryPrices[3].category", is("스니커즈")))
+			.andExpect(jsonPath("$.categoryPrices[3].price", is(9000)))
+			.andExpect(jsonPath("$.categoryPrices[3].brand", is("A")))
+			.andExpect(jsonPath("$.categoryPrices[4].category", is("가방")))
+			.andExpect(jsonPath("$.categoryPrices[4].price", is(2000)))
+			.andExpect(jsonPath("$.categoryPrices[4].brand", is("A")))
+			.andExpect(jsonPath("$.categoryPrices[5].category", is("모자")))
+			.andExpect(jsonPath("$.categoryPrices[5].price", is(1700)))
+			.andExpect(jsonPath("$.categoryPrices[5].brand", is("A")))
+			.andExpect(jsonPath("$.categoryPrices[6].category", is("양말")))
+			.andExpect(jsonPath("$.categoryPrices[6].price", is(1800)))
+			.andExpect(jsonPath("$.categoryPrices[6].brand", is("A")))
+			.andExpect(jsonPath("$.categoryPrices[7].category", is("액세서리")))
+			.andExpect(jsonPath("$.categoryPrices[7].price", is(2200)))
+			.andExpect(jsonPath("$.categoryPrices[7].brand", is("B")))
+			.andExpect(jsonPath("$.total", is(36500)));
+	}
+
+	@Test
+	@DisplayName("단일 브랜드로 모든 카테고리 상품 최저가 조회 테스트")
+	void testGetCheapestBrand() throws Exception {
+		mockMvc.perform(get("/api/products/cheapest-brand")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.cheapest.brand", is("B")))
+			.andExpect(jsonPath("$.cheapest.categories", hasSize(8)))
+			.andExpect(jsonPath("$.cheapest.categories[0].category", is("상의")))
+			.andExpect(jsonPath("$.cheapest.categories[0].price", is(10500)))
+			.andExpect(jsonPath("$.cheapest.categories[1].category", is("아우터")))
+			.andExpect(jsonPath("$.cheapest.categories[1].price", is(5900)))
+			.andExpect(jsonPath("$.cheapest.categories[2].category", is("바지")))
+			.andExpect(jsonPath("$.cheapest.categories[2].price", is(3800)))
+			.andExpect(jsonPath("$.cheapest.categories[3].category", is("스니커즈")))
+			.andExpect(jsonPath("$.cheapest.categories[3].price", is(9100)))
+			.andExpect(jsonPath("$.cheapest.categories[4].category", is("가방")))
+			.andExpect(jsonPath("$.cheapest.categories[4].price", is(2100)))
+			.andExpect(jsonPath("$.cheapest.categories[5].category", is("모자")))
+			.andExpect(jsonPath("$.cheapest.categories[5].price", is(2000)))
+			.andExpect(jsonPath("$.cheapest.categories[6].category", is("양말")))
+			.andExpect(jsonPath("$.cheapest.categories[6].price", is(2000)))
+			.andExpect(jsonPath("$.cheapest.categories[7].category", is("액세서리")))
+			.andExpect(jsonPath("$.cheapest.categories[7].price", is(2200)))
+			.andExpect(jsonPath("$.cheapest.total", is(37600)));
 	}
 }

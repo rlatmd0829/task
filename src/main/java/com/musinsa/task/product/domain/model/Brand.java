@@ -9,6 +9,7 @@ public record Brand(Long id, String name, List<Product> products) {
 	}
 
 	public void setProducts(List<Product> products) {
+		this.products.clear();
 		this.products.addAll(products);
 	}
 

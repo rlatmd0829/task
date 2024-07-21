@@ -25,7 +25,7 @@ class ProductCollectionTest {
 		// Given
 		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
 		Product product2 = new Product(2L, new Brand(2L, "B"), Category.가방, new Price(200));
-		Product product3 = new Product(3L, new Brand(1L, "A"), Category.상의, new Price(50));
+		Product product3 = new Product(3L, new Brand(1L, "A"), Category.가방, new Price(50));
 		List<Product> productList = List.of(product1, product2, product3);
 
 		ProductCollection productCollection = new ProductCollection(productList);
@@ -35,8 +35,8 @@ class ProductCollectionTest {
 
 		// Then
 		assertEquals(2, cheapestProducts.size());
-		assertEquals(product3, cheapestProducts.get(Category.상의));
-		assertEquals(product2, cheapestProducts.get(Category.가방));
+		assertEquals(product1, cheapestProducts.get(Category.상의));
+		assertEquals(product3, cheapestProducts.get(Category.가방));
 	}
 
 	@Test
@@ -45,7 +45,7 @@ class ProductCollectionTest {
 		// Given
 		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
 		Product product2 = new Product(2L, new Brand(2L, "B"), Category.가방, new Price(200));
-		Product product3 = new Product(3L, new Brand(1L, "A"), Category.상의, new Price(50));
+		Product product3 = new Product(3L, new Brand(1L, "A"), Category.가방, new Price(50));
 		List<Product> productList = List.of(product1, product2, product3);
 
 		ProductCollection productCollection = new ProductCollection(productList);
@@ -55,8 +55,8 @@ class ProductCollectionTest {
 
 		// Then
 		assertEquals(2, groupedProducts.size());
-		assertEquals(List.of(product1, product3), groupedProducts.get(Category.상의));
-		assertEquals(List.of(product2), groupedProducts.get(Category.가방));
+		assertEquals(List.of(product1), groupedProducts.get(Category.상의));
+		assertEquals(List.of(product2, product3), groupedProducts.get(Category.가방));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ class ProductCollectionTest {
 	void testFindCheapestProduct() {
 		// Given
 		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
-		Product product2 = new Product(2L, new Brand(1L, "A"), Category.상의, new Price(50));
+		Product product2 = new Product(2L, new Brand(1L, "B"), Category.상의, new Price(50));
 		List<Product> productList = List.of(product1, product2);
 
 		ProductCollection productCollection = new ProductCollection(productList);
@@ -88,5 +88,24 @@ class ProductCollectionTest {
 		assertThatThrownBy(() -> productCollection.findCheapestProduct(productList))
 			.isInstanceOf(CustomException.class)
 			.hasMessage(ErrorCode.PRODUCT_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	@DisplayName("최저가 브랜드 찾기 테스트")
+	void testFindCheapestBrand() {
+		// Given
+		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
+		Product product2 = new Product(2L, new Brand(1L, "A"), Category.가방, new Price(50));
+		Product product3 = new Product(3L, new Brand(2L, "B"), Category.가방, new Price(200));
+		List<Product> productList = List.of(product1, product2, product3);
+
+		ProductCollection productCollection = new ProductCollection(productList);
+
+		// When
+		Brand cheapestBrand = productCollection.findCheapestBrand();
+
+		// Then
+		assertEquals("A", cheapestBrand.name());
+		assertEquals(150, cheapestBrand.getTotalPrice());
 	}
 }

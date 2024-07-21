@@ -10,6 +10,10 @@ import com.musinsa.task.common.exception.CustomException;
 import com.musinsa.task.common.exception.ErrorCode;
 
 public record ProductCollection(List<Product> products) {
+	public ProductCollection {
+		products = List.copyOf(products);
+	}
+
 	public Map<Category, Product> findCheapestProductsByCategory() {
 		return groupByCategory().entrySet().stream()
 			.collect(Collectors.toMap(

@@ -1,7 +1,7 @@
 package com.musinsa.task.unit.product.domain.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.List;
 
@@ -33,17 +33,37 @@ class ProductServiceTest {
 	void testGetProductsByCategories() {
 		// Given
 		Category[] categories = {Category.상의, Category.가방};
-		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
-		Product product2 = new Product(2L, new Brand(2L, "B"), Category.가방, new Price(200));
-		List<Product> mockProducts = List.of(product1, product2);
-
+		List<Product> mockProducts = List.of(
+			new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100)),
+			new Product(2L, new Brand(2L, "B"), Category.가방, new Price(200))
+		);
 		when(productRepository.findAllByCategoryIn(List.of(categories))).thenReturn(mockProducts);
 
 		// When
 		ProductCollection productCollection = productService.getProductsByCategories(categories);
 
 		// Then
-		assertEquals(2, productCollection.products().size());
-		assertEquals(mockProducts, productCollection.products());
+		assertThat(productCollection).isNotNull();
+		assertThat(productCollection.products()).hasSize(2);
+		assertThat(productCollection.products()).containsAll(mockProducts);
+	}
+
+	@Test
+	@DisplayName("전체 상품 조회 테스트")
+	void testGetAllProducts() {
+		// Given
+		List<Product> mockProducts = List.of(
+			new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100)),
+			new Product(2L, new Brand(2L, "B"), Category.가방, new Price(200))
+		);
+		when(productRepository.findAll()).thenReturn(mockProducts);
+
+		// When
+		ProductCollection productCollection = productService.getAllProducts();
+
+		// Then
+		assertThat(productCollection).isNotNull();
+		assertThat(productCollection.products()).hasSize(2);
+		assertThat(productCollection.products()).containsAll(mockProducts);
 	}
 }

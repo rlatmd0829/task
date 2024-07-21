@@ -2,6 +2,7 @@ package com.musinsa.task.integration.product.application.usecase;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -36,10 +37,10 @@ class GetCheapestProductsByCategoryUseCaseTest {
 	void setUp() {
 		productJpaRepository.deleteAll();
 
-		productJpaRepository.save(new ProductEntity(1L, new BrandEntity(1L, "A"), Category.상의, new PriceEmbeddable(100)));
-		productJpaRepository.save(new ProductEntity(2L, new BrandEntity(2L, "B"), Category.가방, new PriceEmbeddable(200)));
-		productJpaRepository.save(new ProductEntity(3L, new BrandEntity(1L, "A"), Category.상의, new PriceEmbeddable(50)));
-		productJpaRepository.save(new ProductEntity(4L, new BrandEntity(3L, "C"), Category.가방, new PriceEmbeddable(150)));
+		productJpaRepository.save(new ProductEntity(1L, new BrandEntity(1L, "A", new ArrayList<>()), Category.상의, new PriceEmbeddable(100)));
+		productJpaRepository.save(new ProductEntity(2L, new BrandEntity(2L, "B", new ArrayList<>()), Category.가방, new PriceEmbeddable(200)));
+		productJpaRepository.save(new ProductEntity(3L, new BrandEntity(1L, "A", new ArrayList<>()), Category.상의, new PriceEmbeddable(50)));
+		productJpaRepository.save(new ProductEntity(4L, new BrandEntity(3L, "C", new ArrayList<>()), Category.가방, new PriceEmbeddable(150)));
 	}
 
 	@Test
