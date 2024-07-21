@@ -108,4 +108,39 @@ class ProductCollectionTest {
 		assertEquals("A", cheapestBrand.name());
 		assertEquals(150, cheapestBrand.getTotalPrice());
 	}
+
+	@Test
+	@DisplayName("카테고리별 최저가 및 최고가 상품 찾기 테스트")
+	void testFindMinMaxPriceProductsByCategory() {
+		// Given
+		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
+		Product product2 = new Product(2L, new Brand(2L, "B"), Category.상의, new Price(200));
+		Product product3 = new Product(3L, new Brand(1L, "A"), Category.가방, new Price(50));
+		List<Product> productList = List.of(product1, product2, product3);
+
+		ProductCollection productCollection = new ProductCollection(productList);
+
+		// When
+		Map.Entry<Product, Product> minMaxPriceProducts = productCollection.findMinMaxPriceProductsByCategory(Category.상의);
+
+		// Then
+		assertEquals(product1, minMaxPriceProducts.getKey());
+		assertEquals(product2, minMaxPriceProducts.getValue());
+	}
+
+	@Test
+	@DisplayName("빈 카테고리에서 최저가 및 최고가 상품 찾기 예외 테스트")
+	void testFindMinMaxPriceProductsByCategory_EmptyCategory() {
+		// Given
+		Product product1 = new Product(1L, new Brand(1L, "A"), Category.상의, new Price(100));
+		Product product2 = new Product(2L, new Brand(2L, "B"), Category.상의, new Price(200));
+		List<Product> productList = List.of(product1, product2);
+
+		ProductCollection productCollection = new ProductCollection(productList);
+
+		// When & Then
+		assertThatThrownBy(() -> productCollection.findMinMaxPriceProductsByCategory(Category.가방))
+			.isInstanceOf(CustomException.class)
+			.hasMessage(ErrorCode.PRODUCT_NOT_FOUND.getMessage());
+	}
 }

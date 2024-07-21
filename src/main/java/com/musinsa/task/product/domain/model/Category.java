@@ -1,8 +1,17 @@
 package com.musinsa.task.product.domain.model;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.musinsa.task.common.exception.CustomException;
 import com.musinsa.task.common.exception.ErrorCode;
 
+import lombok.Getter;
+
+@Getter
 public enum Category {
 	상의("상의"),
 	아우터("아우터"),
@@ -19,11 +28,12 @@ public enum Category {
 		this.displayName = displayName;
 	}
 
+	private static final Map<String, Category> CATEGORY_MAP =
+		Arrays.stream(values())
+			.collect(Collectors.toMap(c -> c.name().toUpperCase(), Function.identity()));
+
 	public static Category fromString(String categoryName) {
-		try {
-			return Category.valueOf(categoryName.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new CustomException(ErrorCode.INVALID_TYPE_VALUE);
-		}
+		return Optional.ofNullable(CATEGORY_MAP.get(categoryName.toUpperCase()))
+			.orElseThrow(() -> new CustomException(ErrorCode.INVALID_TYPE_VALUE));
 	}
 }

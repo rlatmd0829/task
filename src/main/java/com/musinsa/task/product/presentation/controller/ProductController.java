@@ -44,8 +44,8 @@ public class ProductController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/price-info")
-	public ResponseEntity<PriceInfoResponse> getPriceInfo(@RequestParam String category) {
+	@GetMapping("/price-range")
+	public ResponseEntity<PriceInfoResponse> getPriceRangeByCategory(@RequestParam String category) {
 		PriceInfo priceInfo = getMinMaxPriceByCategoryUseCase.execute(category);
 		PriceInfoResponse response = ProductMapper.toPriceInfoResponse(priceInfo);
 		return ResponseEntity.ok(response);

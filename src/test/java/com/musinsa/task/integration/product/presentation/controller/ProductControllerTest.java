@@ -4,8 +4,6 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musinsa.task.common.exception.ErrorCode;
 import com.musinsa.task.product.domain.model.Category;
 import com.musinsa.task.product.infrastructure.persistence.BrandEntity;
 import com.musinsa.task.product.infrastructure.persistence.PriceEmbeddable;
@@ -125,5 +124,29 @@ class ProductControllerTest {
 			.andExpect(jsonPath("$.cheapest.categories[7].category", is("액세서리")))
 			.andExpect(jsonPath("$.cheapest.categories[7].price", is(2200)))
 			.andExpect(jsonPath("$.cheapest.total", is(37600)));
+	}
+
+	@Test
+	@DisplayName("카테고리별 최저가 및 최고가 상품 정보 조회 테스트")
+	void testGetCategoryPriceRange() throws Exception {
+		mockMvc.perform(get("/api/products/price-range")
+				.param("category", "상의")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.category", is("상의")))
+			.andExpect(jsonPath("$.minPrice.brand", is("B")))
+			.andExpect(jsonPath("$.minPrice.price", is(10500)))
+			.andExpect(jsonPath("$.maxPrice.brand", is("A")))
+			.andExpect(jsonPath("$.maxPrice.price", is(11200)));
+	}
+
+	@Test
+	@DisplayName("카테고리가 없는 경우 예외 발생 테스트")
+	void testGetCategoryPriceRangeCategoryNotFound() throws Exception {
+		mockMvc.perform(get("/api/products/price-range")
+				.param("category", "장난감")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message", is(ErrorCode.INVALID_TYPE_VALUE.getMessage())));
 	}
 }
