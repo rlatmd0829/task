@@ -1,5 +1,6 @@
 package com.musinsa.task.integration.product.presentation.controller;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -144,6 +145,32 @@ class BrandControllerTest {
 		mockMvc.perform(put("/api/brands/{id}", 999L)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(brandJson))
+			.andExpect(status().isNotFound())
+			.andExpect(jsonPath("$.message").value(ErrorCode.BRAND_NOT_FOUND.getMessage()));
+	}
+
+	@Test
+	@DisplayName("브랜드 삭제 통합 테스트")
+	void testDeleteBrand() throws Exception {
+		// Given
+		BrandEntity existingBrand = brandJpaRepository.save(BrandEntity.create("BrandToDelete"));
+		Long existingBrandId = existingBrand.getId();
+
+		// When & Then
+		mockMvc.perform(delete("/api/brands/{id}", existingBrandId)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data").doesNotExist());
+
+		assertThat(brandJpaRepository.findById(existingBrandId)).isEmpty();
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 브랜드 삭제 시 예외 발생 테스트")
+	void testDeleteNonExistingBrand() throws Exception {
+		// When & Then
+		mockMvc.perform(delete("/api/brands/{id}", 999L)
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("$.message").value(ErrorCode.BRAND_NOT_FOUND.getMessage()));
 	}

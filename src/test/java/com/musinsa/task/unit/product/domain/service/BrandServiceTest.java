@@ -66,4 +66,31 @@ class BrandServiceTest {
 			.isInstanceOf(CustomException.class)
 			.hasMessage(ErrorCode.BRAND_NOT_FOUND.getMessage());
 	}
+
+	@Test
+	@DisplayName("브랜드를 삭제하는 테스트")
+	void testDeleteBrand() {
+		// Given
+		Long brandId = 1L;
+
+		// When
+		brandService.deleteBrand(brandId);
+
+		// Then
+		verify(brandRepository, times(1)).delete(brandId);
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 브랜드를 삭제하려고 할 때 예외 발생 테스트")
+	void testDeleteNonExistingBrand() {
+		// Given
+		Long brandId = 999L;
+		doThrow(new CustomException(ErrorCode.BRAND_NOT_FOUND))
+			.when(brandRepository).delete(brandId);
+
+		// When & Then
+		assertThatThrownBy(() -> brandService.deleteBrand(brandId))
+			.isInstanceOf(CustomException.class)
+			.hasMessage(ErrorCode.BRAND_NOT_FOUND.getMessage());
+	}
 }
