@@ -19,4 +19,8 @@ public class BrandService {
 	public void updateBrand(Brand brand) {
 		brandRepository.update(brand);
 	}
+
+	public void deleteBrand(Long id) {
+		brandRepository.delete(id);
+	}
 }

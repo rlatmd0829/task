@@ -67,4 +67,12 @@ public class BrandEntity {
 	public void updateName(String name) {
 		this.name = name;
 	}
+
+	public void updateProducts(List<ProductEntity> newProducts) {
+		this.products.clear();
+		newProducts.forEach(product -> {
+			product.updateBrand(this);
+			this.products.add(product);
+		});
+	}
 }

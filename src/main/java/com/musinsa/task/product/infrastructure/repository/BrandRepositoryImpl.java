@@ -1,6 +1,8 @@
 package com.musinsa.task.product.infrastructure.repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -30,14 +32,20 @@ public class BrandRepositoryImpl implements BrandRepository {
 
 		existingBrandEntity.updateName(brand.name());
 
-		existingBrandEntity.getProducts().clear();
-		brand.products().forEach(product -> {
-			ProductEntity productEntity = ProductEntity.toEntity(product);
-			productEntity.updateBrand(existingBrandEntity);
-			existingBrandEntity.addProduct(productEntity);
-		});
+		List<ProductEntity> productEntities = brand.products().stream()
+			.map(ProductEntity::toEntity)
+			.collect(Collectors.toList());
+
+		existingBrandEntity.updateProducts(productEntities);
 
 		brandJpaRepository.save(existingBrandEntity);
 	}
 
+	@Override
+	public void delete(Long id) {
+		BrandEntity existingBrandEntity = brandJpaRepository.findById(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.BRAND_NOT_FOUND));
+
+		brandJpaRepository.delete(existingBrandEntity);
+	}
 }
