@@ -27,8 +27,8 @@ import com.musinsa.task.infrastructure.persistence.PriceEmbeddable;
 import com.musinsa.task.infrastructure.persistence.ProductEntity;
 import com.musinsa.task.infrastructure.repository.BrandJpaRepository;
 import com.musinsa.task.infrastructure.repository.ProductJpaRepository;
-import com.musinsa.task.presentation.dto.request.BrandCreateRequest;
-import com.musinsa.task.presentation.dto.request.ProductCreateRequest;
+import com.musinsa.task.presentation.dto.request.BrandRequest;
+import com.musinsa.task.presentation.dto.request.ProductRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -58,15 +58,15 @@ class BrandControllerTest {
 	@DisplayName("새로운 브랜드와 상품을 추가하는 통합 테스트")
 	void testAddBrand() throws Exception {
 		// Given
-		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+		BrandRequest brandRequest = new BrandRequest(
 			"NewBrand",
 			List.of(
-				new ProductCreateRequest("상의", 15000),
-				new ProductCreateRequest("바지", 20000)
+				new ProductRequest("상의", 15000),
+				new ProductRequest("바지", 20000)
 			)
 		);
 
-		String brandJson = objectMapper.writeValueAsString(brandCreateRequest);
+		String brandJson = objectMapper.writeValueAsString(brandRequest);
 
 		// When & Then
 		mockMvc.perform(post("/api/brands")
@@ -97,15 +97,15 @@ class BrandControllerTest {
 
 		Long existingBrandId = existingBrand.getId();
 
-		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+		BrandRequest brandRequest = new BrandRequest(
 			"UpdatedBrand",
 			List.of(
-				new ProductCreateRequest("상의", 1500),
-				new ProductCreateRequest("바지", 2500)
+				new ProductRequest("상의", 1500),
+				new ProductRequest("바지", 2500)
 			)
 		);
 
-		String brandJson = objectMapper.writeValueAsString(brandCreateRequest);
+		String brandJson = objectMapper.writeValueAsString(brandRequest);
 
 		// When & Then
 		mockMvc.perform(put("/api/brands/{id}", existingBrandId)
@@ -131,15 +131,15 @@ class BrandControllerTest {
 	@DisplayName("존재하지 않는 브랜드 업데이트 시 예외 발생 테스트")
 	void testUpdateNonExistingBrand() throws Exception {
 		// Given
-		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+		BrandRequest brandRequest = new BrandRequest(
 			"NonExistingBrand",
 			List.of(
-				new ProductCreateRequest("상의", 1500),
-				new ProductCreateRequest("바지", 2500)
+				new ProductRequest("상의", 1500),
+				new ProductRequest("바지", 2500)
 			)
 		);
 
-		String brandJson = objectMapper.writeValueAsString(brandCreateRequest);
+		String brandJson = objectMapper.writeValueAsString(brandRequest);
 
 		// When & Then
 		mockMvc.perform(put("/api/brands/{id}", 999L)

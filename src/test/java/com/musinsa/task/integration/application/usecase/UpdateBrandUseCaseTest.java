@@ -24,8 +24,8 @@ import com.musinsa.task.infrastructure.persistence.PriceEmbeddable;
 import com.musinsa.task.infrastructure.persistence.ProductEntity;
 import com.musinsa.task.infrastructure.repository.BrandJpaRepository;
 import com.musinsa.task.infrastructure.repository.ProductJpaRepository;
-import com.musinsa.task.presentation.dto.request.BrandCreateRequest;
-import com.musinsa.task.presentation.dto.request.ProductCreateRequest;
+import com.musinsa.task.presentation.dto.request.BrandRequest;
+import com.musinsa.task.presentation.dto.request.ProductRequest;
 import com.musinsa.task.presentation.mapper.BrandMapper;
 
 @SpringBootTest
@@ -58,15 +58,15 @@ class UpdateBrandUseCaseTest {
 	void testUpdateBrand() throws Exception {
 		// Given
 		Long existingBrandId = brandJpaRepository.findAll().get(0).getId();
-		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+		BrandRequest brandRequest = new BrandRequest(
 			"UpdatedBrand",
 			List.of(
-				new ProductCreateRequest("상의", 1500),
-				new ProductCreateRequest("바지", 2500)
+				new ProductRequest("상의", 1500),
+				new ProductRequest("바지", 2500)
 			)
 		);
 
-		Brand updatedBrand = BrandMapper.toDomain(existingBrandId, brandCreateRequest);
+		Brand updatedBrand = BrandMapper.toDomain(existingBrandId, brandRequest);
 
 		// When
 		updateBrandUseCase.execute(updatedBrand);
@@ -89,15 +89,15 @@ class UpdateBrandUseCaseTest {
 	@DisplayName("존재하지 않는 브랜드 업데이트 시 예외 발생 테스트")
 	void testUpdateNonExistingBrand() {
 		// Given
-		BrandCreateRequest brandCreateRequest = new BrandCreateRequest(
+		BrandRequest brandRequest = new BrandRequest(
 			"NonExistingBrand",
 			List.of(
-				new ProductCreateRequest("상의", 1500),
-				new ProductCreateRequest("바지", 2500)
+				new ProductRequest("상의", 1500),
+				new ProductRequest("바지", 2500)
 			)
 		);
 
-		Brand nonExistingBrand = BrandMapper.toDomain(999L, brandCreateRequest);
+		Brand nonExistingBrand = BrandMapper.toDomain(999L, brandRequest);
 
 		// When & Then
 		assertThatThrownBy(() -> updateBrandUseCase.execute(nonExistingBrand))

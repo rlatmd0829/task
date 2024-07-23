@@ -14,33 +14,40 @@ import com.musinsa.task.application.usecase.AddBrandUseCase;
 import com.musinsa.task.application.usecase.DeleteBrandUseCase;
 import com.musinsa.task.application.usecase.UpdateBrandUseCase;
 import com.musinsa.task.domain.model.Brand;
-import com.musinsa.task.presentation.dto.request.BrandCreateRequest;
+import com.musinsa.task.presentation.dto.request.BrandRequest;
 import com.musinsa.task.presentation.mapper.BrandMapper;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/brands")
 @RequiredArgsConstructor
+@Tag(name = "Brand API", description = "브랜드 API")
 public class BrandController {
 	private final AddBrandUseCase addBrandUseCase;
 	private final UpdateBrandUseCase updateBrandUseCase;
 	private final DeleteBrandUseCase deleteBrandUseCase;
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<Void>> addBrand(@RequestBody BrandCreateRequest brandCreateRequest) {
-		addBrandUseCase.execute(BrandMapper.toDomain(brandCreateRequest));
+	@Operation(summary = "새로운 브랜드 및 상품 추가", description = "새로운 브랜드 및 상품을 추가합니다.", tags = {"Brand API"})
+	public ResponseEntity<ApiResponse<Void>> addBrand(@Valid @RequestBody BrandRequest brandRequest) {
+		addBrandUseCase.execute(BrandMapper.toDomain(brandRequest));
 		return ResponseEntity.ok(new ApiResponse<>());
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<ApiResponse<Void>> updateBrand(@PathVariable Long id, @RequestBody BrandCreateRequest brandCreateRequest) {
-		Brand brand = BrandMapper.toDomain(id, brandCreateRequest);
+	@Operation(summary = "기존 브랜드 및 상품 업데이트", description = "기존 브랜드 및 상품을 업데이트합니다.", tags = {"Brand API"})
+	public ResponseEntity<ApiResponse<Void>> updateBrand(@PathVariable Long id, @RequestBody BrandRequest brandRequest) {
+		Brand brand = BrandMapper.toDomain(id, brandRequest);
 		updateBrandUseCase.execute(brand);
 		return ResponseEntity.ok(new ApiResponse<>());
 	}
 
 	@DeleteMapping("/{id}")
+	@Operation(summary = "브랜드 삭제", description = "브랜드를 삭제합니다.", tags = {"Brand API"})
 	public ResponseEntity<ApiResponse<Void>> deleteBrand(@PathVariable Long id) {
 		deleteBrandUseCase.execute(id);
 		return ResponseEntity.ok(new ApiResponse<>());

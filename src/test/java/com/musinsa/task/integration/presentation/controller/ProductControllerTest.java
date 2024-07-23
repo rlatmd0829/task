@@ -68,7 +68,7 @@ class ProductControllerTest {
 	@Test
 	@DisplayName("카테고리별 최저가 상품 찾기 통합 테스트")
 	void testGetCheapestProduct() throws Exception {
-		mockMvc.perform(get("/api/products/cheapest")
+		mockMvc.perform(get("/api/products/cheapest-by-category")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.categoryPrices", hasSize(8)))
