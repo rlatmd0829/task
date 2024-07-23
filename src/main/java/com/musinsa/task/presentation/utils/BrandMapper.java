@@ -9,6 +9,7 @@ import com.musinsa.task.domain.model.Brand;
 import com.musinsa.task.domain.model.Category;
 import com.musinsa.task.domain.model.Price;
 import com.musinsa.task.domain.model.Product;
+import com.musinsa.task.presentation.dto.response.BrandResponse;
 
 import lombok.experimental.UtilityClass;
 
@@ -32,5 +33,19 @@ public class BrandMapper {
 		Category category = Category.fromString(productRequest.categoryName());
 		Price price = new Price(productRequest.price());
 		return new Product(null, null, category, price); // Brand는 나중에 설정됨
+	}
+
+	public BrandResponse toResponse(Brand brand) {
+		return new BrandResponse(
+			brand.id(),
+			brand.name(),
+			brand.products().stream()
+				.map(product -> new BrandResponse.ProductResponse(
+					product.id(),
+					product.category().toString(),
+					product.price().value()
+				))
+				.collect(Collectors.toList())
+		);
 	}
 }

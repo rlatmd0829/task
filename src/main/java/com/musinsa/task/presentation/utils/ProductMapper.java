@@ -17,9 +17,9 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ProductMapper {
-	public static TotalCategoryPriceResponse toTotalPriceResponse(Map<Category, Product> categoryProductMap) {
-		List<TotalCategoryPriceResponse.CategoryPrice> categoryPrices = categoryProductMap.entrySet().stream()
-			.map(entry -> new TotalCategoryPriceResponse.CategoryPrice(
+	public TotalCategoryPriceResponse toTotalPriceResponse(Map<Category, Product> categoryProductMap) {
+		List<TotalCategoryPriceResponse.CategoryPriceDetail> categoryPriceDetails = categoryProductMap.entrySet().stream()
+			.map(entry -> new TotalCategoryPriceResponse.CategoryPriceDetail(
 				entry.getKey().name(),
 				entry.getValue().brand().name(),
 				entry.getValue().price().value()
@@ -27,22 +27,22 @@ public class ProductMapper {
 			.sorted(Comparator.comparingInt(entry -> Category.valueOf(entry.category()).ordinal()))
 			.collect(Collectors.toList());
 
-		int total = categoryPrices.stream().mapToInt(TotalCategoryPriceResponse.CategoryPrice::price).sum();
+		int total = categoryPriceDetails.stream().mapToInt(TotalCategoryPriceResponse.CategoryPriceDetail::price).sum();
 
-		return new TotalCategoryPriceResponse(categoryPrices, total);
+		return new TotalCategoryPriceResponse(categoryPriceDetails, total);
 	}
 
-	public static CheapestBrandResponse toCheapestBrandResponse(Brand brand) {
-		List<CheapestBrandResponse.BrandCategoryPriceResponse> categoryPrices = brand.products().stream()
-			.map(product -> new CheapestBrandResponse.BrandCategoryPriceResponse(product.category().name(), product.price().value()))
+	public CheapestBrandResponse toCheapestBrandResponse(Brand brand) {
+		List<CheapestBrandResponse.CategoryPriceDetail> categoryPrices = brand.products().stream()
+			.map(product -> new CheapestBrandResponse.CategoryPriceDetail(product.category().name(), product.price().value()))
 			.collect(Collectors.toList());
 		int total = brand.getTotalPrice();
 		return new CheapestBrandResponse(
-			new CheapestBrandResponse.BrandResponse(brand.name(), categoryPrices, total)
+			new CheapestBrandResponse.CheapestBrandDetail(brand.name(), categoryPrices, total)
 		);
 	}
 
-	public static PriceInfoResponse toPriceInfoResponse(PriceInfo priceInfo) {
+	public PriceInfoResponse toPriceInfoResponse(PriceInfo priceInfo) {
 		return new PriceInfoResponse(
 			priceInfo.category(),
 			new PriceInfoResponse.PriceDetail(priceInfo.minPriceBrand(), priceInfo.minPrice()),

@@ -47,4 +47,11 @@ public class BrandRepositoryImpl implements BrandRepository {
 
 		brandJpaRepository.delete(existingBrandEntity);
 	}
+
+	@Override
+	public List<Brand> findAll() {
+		return brandJpaRepository.findAll().stream()
+			.map(BrandEntity::toDomain)
+			.collect(Collectors.toList());
+	}
 }
