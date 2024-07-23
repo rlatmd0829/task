@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musinsa.task.application.usecase.GetCheapestBrandProductsUseCase;
-import com.musinsa.task.common.exception.ApiResponse;
+import com.musinsa.task.presentation.dto.response.ApiResponse;
 import com.musinsa.task.presentation.dto.response.TotalCategoryPriceResponse;
-import com.musinsa.task.presentation.mapper.ProductMapper;
+import com.musinsa.task.presentation.utils.ProductMapper;
 import com.musinsa.task.application.dto.PriceInfo;
 import com.musinsa.task.application.usecase.GetCheapestProductsByCategoryUseCase;
 import com.musinsa.task.application.usecase.GetMinMaxPriceByCategoryUseCase;

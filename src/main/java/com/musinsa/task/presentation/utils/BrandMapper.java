@@ -1,4 +1,4 @@
-package com.musinsa.task.presentation.mapper;
+package com.musinsa.task.presentation.utils;
 
 import java.util.List;
 import java.util.stream.Collectors;

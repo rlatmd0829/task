@@ -26,7 +26,7 @@ import com.musinsa.task.infrastructure.repository.BrandJpaRepository;
 import com.musinsa.task.infrastructure.repository.ProductJpaRepository;
 import com.musinsa.task.presentation.dto.request.BrandRequest;
 import com.musinsa.task.presentation.dto.request.ProductRequest;
-import com.musinsa.task.presentation.mapper.BrandMapper;
+import com.musinsa.task.presentation.utils.BrandMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc

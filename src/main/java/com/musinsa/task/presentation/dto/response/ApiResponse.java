@@ -1,4 +1,6 @@
-package com.musinsa.task.common.exception;
+package com.musinsa.task.presentation.dto.response;
+
+import com.musinsa.task.common.exception.ErrorCode;
 
 import lombok.Getter;
 import lombok.Setter;
