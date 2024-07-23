@@ -1,6 +1,7 @@
 package com.musinsa.task.integration.presentation.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,7 +33,6 @@ import com.musinsa.task.presentation.dto.request.ProductRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class BrandControllerTest {
 
@@ -56,6 +56,7 @@ class BrandControllerTest {
 
 	@Test
 	@DisplayName("새로운 브랜드와 상품을 추가하는 통합 테스트")
+	@Transactional
 	void testAddBrand() throws Exception {
 		// Given
 		BrandRequest brandRequest = new BrandRequest(
@@ -89,6 +90,7 @@ class BrandControllerTest {
 
 	@Test
 	@DisplayName("기존 브랜드와 상품을 업데이트하는 통합 테스트")
+	@Transactional
 	void testUpdateBrand() throws Exception {
 		// Given
 		BrandEntity existingBrand = brandJpaRepository.save(BrandEntity.create("ExistingBrand"));
@@ -173,5 +175,36 @@ class BrandControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("$.message").value(ErrorCode.BRAND_NOT_FOUND.getMessage()));
+	}
+
+	@Test
+	@DisplayName("브랜드 전체 목록 조회 통합 테스트")
+	void testGetAllBrands() throws Exception {
+		// Given
+		BrandEntity brand1 = brandJpaRepository.save(BrandEntity.create("Brand1"));
+		productJpaRepository.save(ProductEntity.create(brand1, Category.상의, new PriceEmbeddable(1000)));
+		productJpaRepository.save(ProductEntity.create(brand1, Category.바지, new PriceEmbeddable(2000)));
+
+		BrandEntity brand2 = brandJpaRepository.save(BrandEntity.create("Brand2"));
+		productJpaRepository.save(ProductEntity.create(brand2, Category.상의, new PriceEmbeddable(1500)));
+		productJpaRepository.save(ProductEntity.create(brand2, Category.바지, new PriceEmbeddable(2500)));
+
+		// When & Then
+		mockMvc.perform(get("/api/brands")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data", hasSize(2)))
+			.andExpect(jsonPath("$.data[0].name").value("Brand1"))
+			.andExpect(jsonPath("$.data[0].products", hasSize(2)))
+			.andExpect(jsonPath("$.data[0].products[0].categoryName").value("상의"))
+			.andExpect(jsonPath("$.data[0].products[0].price").value(1000))
+			.andExpect(jsonPath("$.data[0].products[1].categoryName").value("바지"))
+			.andExpect(jsonPath("$.data[0].products[1].price").value(2000))
+			.andExpect(jsonPath("$.data[1].name").value("Brand2"))
+			.andExpect(jsonPath("$.data[1].products", hasSize(2)))
+			.andExpect(jsonPath("$.data[1].products[0].categoryName").value("상의"))
+			.andExpect(jsonPath("$.data[1].products[0].price").value(1500))
+			.andExpect(jsonPath("$.data[1].products[1].categoryName").value("바지"))
+			.andExpect(jsonPath("$.data[1].products[1].price").value(2500));
 	}
 }
