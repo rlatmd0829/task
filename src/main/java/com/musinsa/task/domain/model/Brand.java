@@ -16,4 +16,15 @@ public record Brand(Long id, String name, List<Product> products) {
 	public int getTotalPrice() {
 		return products.stream().mapToInt(product -> product.price().value()).sum();
 	}
+
+	@Override
+	public String toString() {
+		return "Brand{" +
+			"id=" + id +
+			", name='" + name + '\'' +
+			", products=" + products.stream()
+			.map(product -> "Product{id=" + product.id() + ", category=" + product.category() + ", price=" + product.price() + "}")
+			.toList() +
+			'}';
+	}
 }

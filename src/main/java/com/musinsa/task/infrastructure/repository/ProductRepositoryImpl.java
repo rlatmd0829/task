@@ -19,7 +19,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public List<Product> findAllByCategoryIn(List<Category> categories) {
-		List<ProductEntity> productEntities = productJpaRepository.findAllByCategoryIn(categories);
+		List<ProductEntity> productEntities = productJpaRepository.getAllProductsByCategoryIn(categories);
 		return productEntities.stream()
 			.map(ProductEntity::toDomain)
 			.collect(Collectors.toList());
@@ -27,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public List<Product> findAll() {
-		List<ProductEntity> productEntities = productJpaRepository.findAll();
+		List<ProductEntity> productEntities = productJpaRepository.getAllProducts();
 		return productEntities.stream()
 			.map(ProductEntity::toDomain)
 			.collect(Collectors.toList());
@@ -35,7 +35,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public List<Product> findAllByCategory(Category category) {
-		List<ProductEntity> productEntities = productJpaRepository.findAllByCategory(category);
+		List<ProductEntity> productEntities = productJpaRepository.getAllProductsByCategory(category);
 		return productEntities.stream()
 			.map(ProductEntity::toDomain)
 			.collect(Collectors.toList());

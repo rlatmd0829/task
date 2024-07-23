@@ -50,7 +50,7 @@ public class BrandRepositoryImpl implements BrandRepository {
 
 	@Override
 	public List<Brand> findAll() {
-		return brandJpaRepository.findAll().stream()
+		return brandJpaRepository.getAllBrands().stream()
 			.map(BrandEntity::toDomain)
 			.collect(Collectors.toList());
 	}
